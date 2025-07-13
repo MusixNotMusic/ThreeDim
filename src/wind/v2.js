@@ -24,6 +24,18 @@ export default class ThreeWind {
             "vMax": 21.42
         }
 
+        const width = 512;
+        const height = 512;
+
+        this.renderTarget = new THREE.WebGLRenderTarget(width, height, {
+            minFilter: THREE.NearestFilter,    // 最小化过滤
+            magFilter: THREE.NearestFilter,    // 最大化过滤
+            format: THREE.RGBAFormat,         // 颜色格式
+            type: THREE.UnsignedByteType,     // 数据类型
+            stencilBuffer: false,             // 是否使用模板缓冲区
+            depthBuffer: false 
+        });
+
         this.animateBind = this.animate.bind(this);
 
         this.init();
@@ -36,7 +48,7 @@ export default class ThreeWind {
         this.scene.background = new THREE.Color(0x222222);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 15;
+        camera.position.set(0, 15, 15);
         this.camera = camera;
 
         const renderer = new THREE.WebGLRenderer({ antialias: false });
@@ -55,8 +67,13 @@ export default class ThreeWind {
         const material = new THREE.MeshNormalMaterial({ transparent: true, opacity: 0.5 });
 
         const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(0, 2.5, 0);
+
+     
 
         this.scene.add(mesh);
+        this.scene.add(new THREE.GridHelper(40, 20));
+
     }
 
     animate () {
@@ -67,6 +84,11 @@ export default class ThreeWind {
         controls.update();
 
         renderer.render(scene, camera);
+
+        // renderer.setRenderTarget(this.renderTarget);
+        // renderer.render(scene, camera);
+        // this.plane.material.map = this.renderTarget.texture;
+        // renderer.setRenderTarget(null);
     }
 
     destroy() { 
@@ -99,13 +121,80 @@ export default class ThreeWind {
         const height = 512;
         const emptyPixels = new Uint8Array(width * height * 4);
 
+        this.renderTarget = new THREE.WebGLRenderTarget(width, height, {
+            minFilter: THREE.NearestFilter,    // 最小化过滤
+            magFilter: THREE.NearestFilter,    // 最大化过滤
+            format: THREE.RGBAFormat,         // 颜色格式
+            type: THREE.UnsignedByteType,     // 数据类型
+            stencilBuffer: false,             // 是否使用模板缓冲区
+            depthBuffer: false 
+        });
+
         this.backgroundTexture = this.setTexture(emptyPixels, width, height);
 
         this.screenTexture = this.setTexture(emptyPixels, width, height);
 
         this.colorRampTexture = this.setTexture(getColorRamp(defaultRampColors), 16, 16, THREE.LinearFilter);
+
+        this.drawShaderMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                u_wind:           { value: null },
+                u_particles:      { value: null },
+                u_color_ramp:     { value: this.colorRampTexture },
+                u_particles_res:  { value: this.particleStateResolution },
+                u_wind_min:       { value: [this.windData.uMin,  this.windData.vMin] },
+                u_wind_max:       { value: [this.windData.uMax,  this.windData.vMax] },
+            },
+            vertexShader: drawVert,
+            fragmentShader: drawFrag,
+        })
+
+        this.screenShaderMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                u_texture: { value: null },
+                u_opacity: { value: new THREE.Vector2(width, height) },
+                u_screen: { value: this.screenTexture },
+            },
+            vertexShader: quadVert,
+            fragmentShader: screenFrag,
+        })
+
+        this.plane = new THREE.PlaneGeometry(10, 10);
+
+        
+
+        this.updateShaderMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                u_wind:           { value: null },
+                u_particles:      { value: null },
+                u_rand_seed:      { value: Math.random() },
+                u_wind_res:       { value: [this.windData.width, this.windData.height] },
+                u_wind_min:       { value: [this.windData.uMin,  this.windData.vMin] },
+                u_wind_max:       { value: [this.windData.uMax,  this.windData.vMax] },
+                u_speed_factor:   { value: this.speedFactor },
+                u_drop_rate:      { value: this.dropRate    },
+                u_drop_rate_bump: { value: this.dropRateBump }
+            },
+            vertexShader: quadVert,
+            fragmentShader: updateFrag
+        })
     }
 
+    draw() {
+        const geometry = new THREE.PlaneGeometry(10, 10);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.5,
+            side: THREE.DoubleSide
+        })
+
+        const plane = new THREE.Mesh(geometry, material)
+        this.plane = plane;
+        plane.position.set(10, 5);
+
+        this.scene.add(plane);
+    }
 
     set numParticles(numParticles) {
 
@@ -124,7 +213,8 @@ export default class ThreeWind {
 
         const particleIndices = new Float32Array(this._numParticles);
         for (let i = 0; i < this._numParticles; i++) particleIndices[i] = i;
-        this.particleIndexBuffer = util.createBuffer(gl, particleIndices);
+
+        this.particleIndexBuffer = this.setTexture(particleIndices, this._numParticles, 1);
     }
     get numParticles() {
         return this._numParticles;

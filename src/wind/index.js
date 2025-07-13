@@ -31,31 +31,23 @@ export default class ThreeWind {
 
         this.initWind();
         // this.initMesh();
-        this.animate();
-
+        // this.animate();
+        
         window.ThreeWind = this;
     }
 
     init() {
-        // this.scene = new THREE.Scene();
-        // this.scene.background = new THREE.Color(0x222222);
-
-        // const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        // camera.position.z = 15;
-
-        const renderer = new THREE.WebGLRenderer({ antialias: false });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+        // document.body.appendChild(renderer.domElement);
         renderer.domElement.style.background = '#000'
+
+        
+      
 
         this.gl = renderer.getContext();
         
-        // this.camera = camera;
         this.renderer = renderer;
-
-        // this.controls = new OrbitControls( camera, renderer.domElement );
-
-        // this.controls.update();
     }
 
     initWind() {
@@ -154,6 +146,10 @@ export default class ThreeWind {
 
         this.drawScreen();
         this.updateParticles();
+
+        const canvas = this.renderer.domElement;
+        this.texture = new THREE.CanvasTexture(canvas);
+        this.texture.needsUpdate = true;
     }
 
 
