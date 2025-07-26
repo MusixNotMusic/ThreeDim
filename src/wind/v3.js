@@ -31,7 +31,7 @@ export default class ThreeWind2 {
         });
 
         this.animateBind = this.animate.bind(this);
-
+        this.texture = { value: null }
         this.threeWind = new ThreeWind();
         this.init();
         this.initMesh();
@@ -67,12 +67,15 @@ export default class ThreeWind2 {
         this.scene.add(mesh);
         this.scene.add(new THREE.GridHelper(40, 20));
 
+        this.texture = new THREE.CanvasTexture(this.threeWind.renderer.domElement);
+        this.texture.needsUpdate = true;
         const geometry1 = new THREE.PlaneGeometry(10, 10);
         const material1 = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             transparent: true,
             opacity: 1,
             side: THREE.DoubleSide,
+            map: this.texture
         })
 
         const plane = new THREE.Mesh(geometry1, material1)
@@ -90,12 +93,19 @@ export default class ThreeWind2 {
 
         controls.update();
 
-        renderer.render(scene, camera);
-        
         if (this.threeWind) {
             this.threeWind.draw()
-            this.plane.material.map = this.threeWind.texture;
+            // if(!this.plane.material.map) {
+            //     this.plane.material.map = this.threeWind.texture;
+            // } else {
+            // }
+            // this.threeWind.needsUpdate = true;
+            if (this.plane.material.map) {
+                this.plane.material.map.needsUpdate = true;
+            }
         }
+
+         renderer.render(scene, camera);
     }
 
     destroy() { 

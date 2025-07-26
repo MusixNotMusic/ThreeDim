@@ -146,10 +146,6 @@ export default class ThreeWind {
 
         this.drawScreen();
         this.updateParticles();
-
-        const canvas = this.renderer.domElement;
-        this.texture = new THREE.CanvasTexture(canvas);
-        this.texture.needsUpdate = true;
     }
 
 

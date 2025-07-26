@@ -17,9 +17,9 @@ void main() {
         color.r / 255.0 + color.b,
         color.g / 255.0 + color.a);
 
-    gl_PointSize = 2.0;
+    gl_PointSize = 1.0;
 
-    // vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-    // gl_Position = projectionMatrix * mvPosition; 
-    gl_Position = vec4(2.0 * v_particle_pos.x - 1.0, 1.0 - 2.0 * v_particle_pos.y, 0, 1);
+    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+    gl_Position = projectionMatrix * mvPosition; 
+    // gl_Position = vec4(2.0 * v_particle_pos.x - 1.0, 1.0 - 2.0 * v_particle_pos.y, 0, 1);
 }

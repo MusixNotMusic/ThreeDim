@@ -6,6 +6,7 @@ import { defaultRampColors, getColorRamp } from './colors';
 import vertexShader from './glsl/quad2.vert.glsl';
 import fragmentShader from './glsl/screen2.frag.glsl';
 
+import quadVertexShader from './glsl/quad.vert.glsl';
 import updateFragmentShader from './glsl/update.frag.glsl'
 
 import drwaVertexShader from './glsl/draw.vert.glsl';
@@ -60,7 +61,7 @@ export default class ThreeWind2 {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x222222);
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.000001, 100000);
         camera.position.set(0, 40, 0);
         this.camera = camera;
 
@@ -144,7 +145,8 @@ export default class ThreeWind2 {
 
         const particleState = new Uint8Array(this.numParticles * 4);
         for (let i = 0; i < particleState.length; i++) {
-            particleState[i] = i % 4 > 1 ? 0 : Math.floor(Math.random() * 256); // randomize the initial particle positions
+            // particleState[i] = i % 4 > 1 ? 0 : Math.floor(Math.random() * 256); // randomize the initial particle positions
+            particleState[i] = Math.floor(Math.random() * 256); // randomize the initial particle positions
         }
 
         const particleIndices = new Float32Array(this.numParticles);
@@ -155,9 +157,13 @@ export default class ThreeWind2 {
 
         const geometry = new THREE.BufferGeometry();
 
-        // geometry.setAttribute('position', new THREE.Float32BufferAttribute(particleState, 4))
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(particleState, 4))
 
         geometry.setAttribute('a_index', new THREE.BufferAttribute(particleIndices, 1));
+
+        const quad = new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]);
+        geometry.setAttribute('a_pos', new THREE.BufferAttribute(quad, 1));
+
 
         const material = new THREE.ShaderMaterial({
             vertexShader: drwaVertexShader,
