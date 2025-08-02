@@ -1,27 +1,3 @@
-import * as THREE from 'three';
-export default class StageManager { 
-    constructor() {
-        this.DPR = window.devicePixelRatio;
-        this.backgroundColor = 0x000022;
-    }
-
-    init() {
-        this.renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            alpha: true,
-            preserveDrawingBuffer: true,
-            devicePixelRatio: DPR
-        });
-        
-        this.camera = new THREE.PerspectiveCamera( 28, window.innerWidth / window.innerHeight, NEAR, FAR );
-		this.camera.position.z = 0;
-		// this.camera.setLens(8, 7.49); // 16mm bolex
-    }
-
-
-
-}
-
 
 var container, stats;
 

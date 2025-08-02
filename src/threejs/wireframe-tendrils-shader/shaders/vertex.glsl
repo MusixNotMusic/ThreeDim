@@ -12,6 +12,5 @@ void main() {
 
     vec4 tex2 = texture2D(tDiffuse, vec2(tex.r + uTime * scrollSpeed, tex.b + (uTime * scrollSpeed * 1.234)));
 
-gl_Position = projectionMatrix * modelViewMatrix * vec4(tex2.rgb - vec3(.5, .5, .5), 1.);
-
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(tex2.rgb - vec3(.5, .5, .5), 1.);
 }

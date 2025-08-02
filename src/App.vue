@@ -1,7 +1,7 @@
 <script setup>
 import { routes } from './router/index.js';
 import { ref } from 'vue';
-const activeIndex = ref(0);
+const activeIndex = ref('0');
 const paths = ref(routes);
 </script>
 
@@ -9,7 +9,7 @@ const paths = ref(routes);
   <div class="app">
     <div class="menu">
       <el-menu :default-active="activeIndex">
-        <el-menu-item v-for="(item, index) in paths" :key="index" :index="index + 1">
+        <el-menu-item v-for="(item, index) in paths" :key="index" :index="`${index}`">
           <router-link :to="item.path" class="menu-link" :class="{active: index == activeIndex}" @click="activeIndex = index">
             {{ item.name }}
           </router-link>
@@ -41,18 +41,23 @@ const paths = ref(routes);
   height: 100vh;
   background: rgba(255, 255, 255, 0.85);
 }
+
 .active {
   color: orange;
+  border-left: 4px solid orange !important;
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .menu-link {
   display: block;
   width: 100%;
+  padding: 0px 20px;
+  border-left: 4px solid transparent;
 }
 
-::v-deep(.el-menu .is-active){
-  background: rgba(255, 255, 255, 0.85);
-  border-left: 4px solid orange;
+
+::v-deep(.el-menu-item) {
+  padding: 0px !important;
 }
 
 </style>
