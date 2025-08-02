@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { defaultRampColors, getColorRamp } from './colors';
 import ThreeWind from './index'; 
 
 
@@ -38,6 +37,13 @@ export default class ThreeWind2 {
         this.animate();
     }
 
+    setDom(dom) {
+        dom.style.position = 'fixed'
+        dom.style.left = '0px';
+        dom.style.top = '0px'
+        dom.style.zIndex =  0;
+    }
+
     init () { 
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x222222);
@@ -48,6 +54,7 @@ export default class ThreeWind2 {
 
         const renderer = new THREE.WebGLRenderer({ antialias: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        this.setDom(renderer.domElement);
         document.body.appendChild(renderer.domElement);
         
         this.renderer = renderer;
