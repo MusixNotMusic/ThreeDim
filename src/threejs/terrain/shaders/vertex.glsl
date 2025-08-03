@@ -1,16 +1,14 @@
-uniform float uTime;
-uniform sampler2D tDiffuse;
+uniform sampler2D terrainTex;
 varying vec2 vUv;
 
 void main() {
 
     vUv = uv;
 
-    vec4 tex = texture2D(tDiffuse, uv);
+    vec4 tex = texture2D(terrainTex, uv);
 
-    float scrollSpeed = 75.;
+    float z = -10000.0 + ((tex.r * 256.0 * 256.0 + tex.g * 256.0 + tex.b) * 0.1);
 
-    vec4 tex2 = texture2D(tDiffuse, vec2(tex.r + uTime * scrollSpeed, tex.b + (uTime * scrollSpeed * 1.234)));
-
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(tex2.rgb - vec3(.5, .5, .5), 1.);
+    z = (z + 10000.0) - 50.0;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(vec3(position.x, position.y, z), 1.);
 }

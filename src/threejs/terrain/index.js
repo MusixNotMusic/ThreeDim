@@ -11,15 +11,16 @@ import { FilmShader  } from "./shaders/FilmShader.js";
 
 import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
+import { fa } from "element-plus/es/locales.mjs";
 
 
-export default class ShaderDemo5 { 
+export default class Terrain { 
     constructor() {
         this.clock = new THREE.Clock();
         this._animate = this.animate.bind(this);
         
         this.init();
-        this.setupComposer();
+        // this.setupComposer();
         this.initMesh();
         this.animate();
     }
@@ -46,7 +47,7 @@ export default class ShaderDemo5 {
         this.renderer.setSize( window.innerWidth, window.innerHeight );
         document.body.appendChild(this.renderer.domElement);
 
-        this.camera = new THREE.PerspectiveCamera( 28, window.innerWidth / window.innerHeight, .1, 50000 );
+        this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, .1, 50000 );
         this.camera.position.set(0, 10, 10)
 
         this.scene = new THREE.Scene();
@@ -76,8 +77,7 @@ export default class ShaderDemo5 {
     }
 
     getTextureData() { 
-        const texture = new THREE.TextureLoader().load( '/texture/rgb-perlin-seamless-512.png' );
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        const texture = new THREE.TextureLoader().load( '/texture/rgbdem.png' );
         return texture;
     }
 
@@ -86,26 +86,27 @@ export default class ShaderDemo5 {
         const material = new THREE.ShaderMaterial( {
             transparent: true,
             wireframe: true,
-            wireframe: true,
             uniforms: {
                 "uTime":           { value: 0.0 },
-                "tDiffuse":        { value: this.getTextureData() },
+                "terrainTex":       { value: this.getTextureData() },
                 "uZoomMultiplyer": { value: 12 / (new THREE.Vector3().distanceTo(this.camera.position)) }
             },
-            depthTest:      false,
+            depthTest:      true,
+            // wireframe:      false,
             vertexShader:   vertexShader,
             fragmentShader: fragmentShader
         })
 
-        const geomatry = new THREE.PlaneGeometry( 10, 10, 512, 512 );
+        const geomatry = new THREE.PlaneGeometry( 40, 40, 512, 512 );
         const plane = new THREE.Mesh( geomatry, material );
-        plane.scale.set(5, 5, 5);
-        plane.position.z = 0;
+        plane.rotation.x = -Math.PI / 2;
+        // plane.position.y = 10000;
 
         this.plane = plane;
         this.scene.add( plane );
 
-        // this.scene.add(new THREE.GridHelper(10, 10))
+        this.scene.add(new THREE.GridHelper(10, 10))
+        this.scene.add(new THREE.AxesHelper(10, 10))
     }
     
 
@@ -133,9 +134,11 @@ export default class ShaderDemo5 {
 
 
     animate () {
-		this.filmEffect.uniforms['time'].value = Math.random() * 100 + 2;
+        if (this.filmEffect) {
+            this.filmEffect.uniforms['time'].value = Math.random() * 100 + 2;
+        }
 		requestAnimationFrame( this._animate );
-        this.update();
+        // this.update();
         // this.cameraUpdate();
         this.controls.update();
         this.renderer.render(this.scene, this.camera)

@@ -1,11 +1,10 @@
-uniform float uTime;
-uniform sampler2D tDiffuse;
+uniform sampler2D terrainTex;
 varying vec2 vUv;
 
 void main() {
 
-    vec4 tex = texture2D(tDiffuse, vUv + uTime * 250.);
+    vec4 tex = texture2D(terrainTex, vUv);
 
-    gl_FragColor = vec4(tex.rgb * 1.5, .07);
+    gl_FragColor = vec4(tex.rgb * 1.5, .27);
 
 }

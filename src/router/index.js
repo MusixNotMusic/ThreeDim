@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Wind from '../views/Wind.vue'
 import Wireframe from '../views/Wireframe.vue'
+import Terrian from '../views/Terrain.vue'
 
 export const routes = [
   {
@@ -18,6 +19,11 @@ export const routes = [
     path: '/Wireframe',
     name: 'Wireframe',
     component: Wireframe
+  },
+  {
+    path: '/Terrian',
+    name: 'Terrian',
+    component: Terrian
   }
 ]
 
