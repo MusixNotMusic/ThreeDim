@@ -77,6 +77,9 @@ export default class ShaderDemo5 {
 
     getTextureData() { 
         const texture = new THREE.TextureLoader().load( '/texture/rgb-perlin-seamless-512.png' );
+        // const texture = new THREE.TextureLoader().load( '/texture/terrian.png' );
+        // const texture = new THREE.TextureLoader().load( '/texture/image.png' );
+        // const texture = new THREE.TextureLoader().load( '/texture/noise2.png' );
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         return texture;
     }
