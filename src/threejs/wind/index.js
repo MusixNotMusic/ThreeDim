@@ -13,38 +13,32 @@ import updateFrag from './shaders/update.frag.glsl';
 
 export default class ThreeWind {
     constructor() {
-        this.windData = {
-            "source": "http://nomads.ncep.noaa.gov",
-            "date": "2016-11-20T00:00Z",
-            "width": 360,
-            "height": 180,
-            "uMin": -21.32,
-            "uMax": 26.8,
-            "vMin": -21.57,
-            "vMax": 21.42
-        };
-
-     
-
-        this.animateBind = this.animate.bind(this);
         this.init();
 
         this.initWind();
-        // this.initMesh();
-        // this.animate();
+
+        this.tileSize = 1024;
         
         window.ThreeWind = this;
     }
 
+    initCanvas() { 
+        const canvas = document.createElement('canvas');
+        canvas.width = this.tileSize;
+        canvas.height = this.tileSize;
+
+        return canvas;
+    }
+
     init() {
+        // const canvas = this.initCanvas();
+        // const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: false, preserveDrawingBuffer: false });
+        // renderer.setSize(canvas.width, canvas.height);
         const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        // document.body.appendChild(renderer.domElement);
-        renderer.domElement.style.background = '#000'
 
-
+        renderer.domElement.style.background = '#000';
         this.gl = renderer.getContext();
-        
         this.renderer = renderer;
     }
 
@@ -63,29 +57,9 @@ export default class ThreeWind {
 
         this.setColorRamp(defaultRampColors);
         this.resize();
-        this.getImage();
     }
-
-    getImage() { 
-        const windImage = new Image();
-        this.numParticles = 256 * 256;
-        this.windData.image = windImage;
-        windImage.src = '/wind/2016112000.png';
-        windImage.onload = () => {
-            this.setWind(this.windData);
-        };
-    }
-
 
     animate () {
-        this.id = requestAnimationFrame(this.animateBind);
-
-        const { renderer, scene, camera, controls } = this;
-
-        // controls.update();
-
-        // renderer.render(scene, camera);
-
         if (this.windData) {
             this.draw();
         }
@@ -96,7 +70,7 @@ export default class ThreeWind {
         const emptyPixels = new Uint8Array(gl.canvas.width * gl.canvas.height * 4);
         // screen textures to hold the drawn screen for the previous and the current frame
         this.backgroundTexture = util.createTexture(gl, gl.NEAREST, emptyPixels, gl.canvas.width, gl.canvas.height);
-        this.screenTexture = util.createTexture(gl, gl.NEAREST, emptyPixels, gl.canvas.width, gl.canvas.height);
+        this.screenTexture     = util.createTexture(gl, gl.NEAREST, emptyPixels, gl.canvas.width, gl.canvas.height);
     }
 
 
@@ -169,7 +143,6 @@ export default class ThreeWind {
         this.screenTexture = temp;
     }
 
-
      drawTexture(texture, opacity) {
         const gl = this.gl;
         const program = this.screenProgram;
@@ -230,5 +203,12 @@ export default class ThreeWind {
         const temp = this.particleStateTexture0;
         this.particleStateTexture0 = this.particleStateTexture1;
         this.particleStateTexture1 = temp;
+    }
+
+    dispose() {
+        if(this.renderer) {
+            this.renderer.dispose();
+            this.renderer = null;
+        } 
     }
 }

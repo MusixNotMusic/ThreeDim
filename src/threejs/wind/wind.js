@@ -32,9 +32,13 @@ export default class ThreeWind2 {
         this.animateBind = this.animate.bind(this);
         this.texture = { value: null }
         this.threeWind = new ThreeWind();
-        this.init();
-        this.initMesh();
-        this.animate();
+        
+        this.getImage().then(() => {
+            this.init();
+            this.initMesh();
+            this.animate();
+        });
+
     }
 
     setDom(dom) {
@@ -42,6 +46,19 @@ export default class ThreeWind2 {
         dom.style.left = '0px';
         dom.style.top = '0px'
         dom.style.zIndex =  0;
+    }
+
+    getImage() { 
+        const windImage = new Image();
+        this.windData.image = windImage;
+        windImage.src = '/wind/2016112000.png';
+        return new Promise((resolve, reject) => {
+            this.threeWind.numParticles = 256 * 256;
+            windImage.onload = () => {
+                this.threeWind.setWind(this.windData);
+                resolve();
+            };
+        });
     }
 
     init () { 
@@ -102,11 +119,6 @@ export default class ThreeWind2 {
 
         if (this.threeWind) {
             this.threeWind.draw()
-            // if(!this.plane.material.map) {
-            //     this.plane.material.map = this.threeWind.texture;
-            // } else {
-            // }
-            // this.threeWind.needsUpdate = true;
             if (this.plane.material.map) {
                 this.plane.material.map.needsUpdate = true;
             }
@@ -123,10 +135,10 @@ export default class ThreeWind2 {
             this.renderer = null;
         } 
 
-        // if(this.threeWind) {
-        //     this.threeWind.dispose()
-        //     this.threeWind = null;
-        // }
+        if(this.threeWind) {
+            this.threeWind.dispose()
+            this.threeWind = null;
+        }
 
     }
 }
