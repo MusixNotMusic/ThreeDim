@@ -137,7 +137,7 @@ export default class ShaderDemo5 {
 
     animate () {
 		this.filmEffect.uniforms['time'].value = Math.random() * 100 + 2;
-		requestAnimationFrame( this._animate );
+		this.id = requestAnimationFrame( this._animate );
         this.update();
         // this.cameraUpdate();
         this.controls.update();
@@ -145,6 +145,7 @@ export default class ShaderDemo5 {
 	}
 
     dispose() {
+        cancelAnimationFrame(this.id);
        if(this.renderer) {
             this.renderer.dispose();
             document.body.removeChild(this.renderer.domElement);

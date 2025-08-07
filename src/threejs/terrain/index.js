@@ -81,17 +81,23 @@ export default class Terrain {
         return texture;
     }
 
+    getTileTexture() { 
+        const texture = new THREE.TextureLoader().load( '/texture/rgb-perlin-seamless-512.png' );
+        return texture;
+    }
+
 
     initMesh () {
         const material = new THREE.ShaderMaterial( {
             transparent: true,
-            wireframe: true,
             uniforms: {
                 "uTime":           { value: 0.0 },
                 "terrainTex":       { value: this.getTextureData() },
-                "uZoomMultiplyer": { value: 12 / (new THREE.Vector3().distanceTo(this.camera.position)) }
+                "uZoomMultiplyer": { value: 12 / (new THREE.Vector3().distanceTo(this.camera.position)) },
+                tileTex:           { value: this.getTileTexture() }
             },
             depthTest:      true,
+            wireframe:      true,
             // wireframe:      false,
             vertexShader:   vertexShader,
             fragmentShader: fragmentShader
@@ -137,7 +143,7 @@ export default class Terrain {
         if (this.filmEffect) {
             this.filmEffect.uniforms['time'].value = Math.random() * 100 + 2;
         }
-		requestAnimationFrame( this._animate );
+		this.id = requestAnimationFrame( this._animate );
         // this.update();
         // this.cameraUpdate();
         this.controls.update();
@@ -145,6 +151,7 @@ export default class Terrain {
 	}
 
     dispose() {
+       cancelAnimationFrame(this.id);
        if(this.renderer) {
             this.renderer.dispose();
             document.body.removeChild(this.renderer.domElement);

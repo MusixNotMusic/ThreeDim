@@ -123,5 +123,10 @@ export default class ThreeWind2 {
             this.renderer = null;
         } 
 
+        // if(this.threeWind) {
+        //     this.threeWind.dispose()
+        //     this.threeWind = null;
+        // }
+
     }
 }

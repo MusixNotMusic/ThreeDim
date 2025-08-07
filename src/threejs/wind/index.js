@@ -42,8 +42,6 @@ export default class ThreeWind {
         // document.body.appendChild(renderer.domElement);
         renderer.domElement.style.background = '#000'
 
-        
-      
 
         this.gl = renderer.getContext();
         
@@ -233,15 +231,4 @@ export default class ThreeWind {
         this.particleStateTexture0 = this.particleStateTexture1;
         this.particleStateTexture1 = temp;
     }
-
-    destroy() { 
-        cancelAnimationFrame(this.id);
-        if(this.renderer) {
-            this.renderer.dispose();
-            document.body.removeChild(this.renderer.domElement);
-            this.renderer = null;
-        } 
-
-    }
-
 }

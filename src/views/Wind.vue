@@ -3,7 +3,7 @@
 
 <script setup>
 import { onUnmounted } from 'vue';
-import ThreeWind2 from '../wind/v3.js';
+import ThreeWind2 from '../threejs/wind/v3.js';
 
 
 const wind = new ThreeWind2()
