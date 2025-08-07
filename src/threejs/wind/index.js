@@ -13,33 +13,39 @@ import updateFrag from './shaders/update.frag.glsl';
 
 export default class ThreeWind {
     constructor() {
+        this.devicePixelRatio = 2;
         this.init();
 
         this.initWind();
 
-        this.tileSize = 1024;
-        
         window.ThreeWind = this;
     }
 
-    initCanvas() { 
-        const canvas = document.createElement('canvas');
-        canvas.width = this.tileSize;
-        canvas.height = this.tileSize;
-
-        return canvas;
-    }
 
     init() {
-        // const canvas = this.initCanvas();
-        // const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: false, preserveDrawingBuffer: false });
-        // renderer.setSize(canvas.width, canvas.height);
         const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        renderer.domElement.width = window.innerWidth * this.devicePixelRatio;
+        renderer.domElement.height = window.innerHeight * this.devicePixelRatio;
+
+        renderer.setSize(window.innerWidth * this.devicePixelRatio, window.innerHeight * this.devicePixelRatio);
 
         renderer.domElement.style.background = '#000';
+        
         this.gl = renderer.getContext();
+        
         this.renderer = renderer;
+    }
+
+    setRetina(ratio) {
+        if (this.renderer) {
+            this.devicePixelRatio = ratio;
+            const canvas = this.renderer.domElement;
+            canvas.width = window.innerWidth * ratio;
+            canvas.height = window.innerHeight * ratio;
+            this.renderer.setSize(window.innerWidth * this.devicePixelRatio, window.innerHeight * this.devicePixelRatio);
+            this.resize();
+        }
     }
 
     initWind() {

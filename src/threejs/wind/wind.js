@@ -17,17 +17,6 @@ export default class ThreeWind2 {
             "vMax": 21.42
         }
 
-        const width = 512;
-        const height = 512;
-
-        this.renderTarget = new THREE.WebGLRenderTarget(width, height, {
-            minFilter: THREE.NearestFilter,    // 最小化过滤
-            magFilter: THREE.NearestFilter,    // 最大化过滤
-            format: THREE.RGBAFormat,         // 颜色格式
-            type: THREE.UnsignedByteType,     // 数据类型
-            stencilBuffer: false,             // 是否使用模板缓冲区
-            depthBuffer: false 
-        });
 
         this.animateBind = this.animate.bind(this);
         this.texture = { value: null }
@@ -82,18 +71,18 @@ export default class ThreeWind2 {
     }
 
     initMesh () { 
-        const geometry = new THREE.BoxGeometry(5, 5, 5);
-        const material = new THREE.MeshNormalMaterial({ transparent: true, opacity: 0.5 });
+        // const geometry = new THREE.BoxGeometry(5, 5, 5);
+        // const material = new THREE.MeshNormalMaterial({ transparent: true, opacity: 1.8 });
 
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(0, 2.5, 0);
+        // const mesh = new THREE.Mesh(geometry, material);
+        // mesh.position.set(0, 2.5, 0);
      
-        this.scene.add(mesh);
+        // this.scene.add(mesh);
         this.scene.add(new THREE.GridHelper(40, 20));
 
         this.texture = new THREE.CanvasTexture(this.threeWind.renderer.domElement);
         this.texture.needsUpdate = true;
-        const geometry1 = new THREE.PlaneGeometry(10, 10);
+        const geometry1 = new THREE.PlaneGeometry(40, 20);
         const material1 = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             transparent: true,
@@ -104,7 +93,8 @@ export default class ThreeWind2 {
 
         const plane = new THREE.Mesh(geometry1, material1)
         this.plane = plane;
-        plane.position.set(10, 5);
+        // plane.position.set(10, 5);
+        plane.rotation.x = -Math.PI / 2;
 
         this.scene.add(plane);
 
