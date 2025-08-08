@@ -11,7 +11,7 @@ import quadVert from './shaders/quad.vert.glsl';
 import screenFrag from './shaders/screen.frag.glsl';
 import updateFrag from './shaders/update.frag.glsl';
 
-export default class ThreeWind {
+export default class WindGL {
     constructor() {
         this.devicePixelRatio = 2;
         this.init();
@@ -20,7 +20,6 @@ export default class ThreeWind {
 
         window.ThreeWind = this;
     }
-
 
     init() {
         const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false });

@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cdyw/asd-utils": "^1.0.20",
     "element-plus": "^2.10.5",
     "three": "^0.178.0",
     "vue": "^3.5.17",

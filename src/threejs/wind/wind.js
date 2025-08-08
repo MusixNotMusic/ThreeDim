@@ -1,12 +1,11 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import ThreeWind from './index'; 
+import WindGL from './index'; 
 
 
-export default class ThreeWind2 {
-
-    constructor() {
-        this.windData = {
+export default class ThreeWind {
+    constructor(windData) {
+        this.windData = windData || {
             "source": "http://nomads.ncep.noaa.gov",
             "date": "2016-11-20T00:00Z",
             "width": 360,
@@ -20,14 +19,12 @@ export default class ThreeWind2 {
 
         this.animateBind = this.animate.bind(this);
         this.texture = { value: null }
-        this.threeWind = new ThreeWind();
+        this.threeWind = new WindGL();
         
-        this.getImage().then(() => {
-            this.init();
-            this.initMesh();
-            this.animate();
-        });
-
+        this.getImage()
+        this.init();
+        this.initMesh();
+        this.animate();
     }
 
     setDom(dom) {
@@ -48,6 +45,11 @@ export default class ThreeWind2 {
                 resolve();
             };
         });
+    }
+    setWindData(windData) {
+        this.windData = windData;
+        this.threeWind.numParticles = 256 * 256;
+        this.threeWind.setWind(this.windData);
     }
 
     init () { 
@@ -101,13 +103,15 @@ export default class ThreeWind2 {
     }
 
     animate () {
+        if (!this.windData) return;
+
         this.id = requestAnimationFrame(this.animateBind);
 
         const { renderer, scene, camera, controls } = this;
 
         controls.update();
 
-        if (this.threeWind) {
+        if (this.threeWind && this.threeWind.windData) {
             this.threeWind.draw()
             if (this.plane.material.map) {
                 this.plane.material.map.needsUpdate = true;
