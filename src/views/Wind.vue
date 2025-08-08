@@ -33,9 +33,10 @@ const generateU8IntArray = (ins, level) => {
   const imageData = ctx.createImageData(canvas.width, canvas.height);
   const data = imageData.data; // Uint8ClampedArray (R, G, B, A)
 
-  for(let i = 0; i < size * 4; i += 4) {
+  for(let i = 0; i < size; i++) {
     data[i * 4 + 0] = (U[i] - uMin) / (uMax - uMin) * 255;
     data[i * 4 + 1] = (V[i] - vMin) / (vMax - vMin) * 255;
+    data[i * 4 + 2] = 0;
     data[i * 4 + 3] = 255;
   }
 

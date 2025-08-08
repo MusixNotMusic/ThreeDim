@@ -2,10 +2,10 @@ import { decompress, WindField3DFormat } from '@cdyw/asd-utils';
 
 const fileList = [
     // { 'name': 'yanan', suffix: 'z' },
-    { name: 'YW_NAFP_C_YWCC_20250808060000_P_NULL_NULL_12004_M01.bin',          'suffix': 'zst' },
-    { 'name': 'YW_NAFP_C_YWCC_202409201200_P_NULL_NULL_12004.bin',              'suffix': 'zst' },
-    { 'name': 'YW_RADA_C_YWCC_20250718103200_P_NULL_NULL_12003_M100-0.5.bin',   'suffix': 'zst' },
     { 'name': 'YW_RADA_C_YWCC_20250314063000_P_DPR_NULL_1016_M3000',            'suffix': 'zip' },
+    { 'name': 'YW_NAFP_C_YWCC_202409201200_P_NULL_NULL_12004.bin',              'suffix': 'zst' },
+    { name: 'YW_NAFP_C_YWCC_20250808060000_P_NULL_NULL_12004_M01.bin',          'suffix': 'zst' },
+    { 'name': 'YW_RADA_C_YWCC_20250718103200_P_NULL_NULL_12003_M100-0.5.bin',   'suffix': 'zst' },
     { 'name': 'YW_RADA_C_YWCC_20250718015700_P_NULL_NULL_12003_M100-0.bin',     'suffix': 'zst'},
     { 'name': 'YW_RADA_C_YWCC_20250305080000_P_DPR_NULL_1016_M3000',            'suffix': 'zip' },
     { 'name': 'YW_RADA_C_YWCC_20250314073000_P_DPR_NULL_1016_M3000',            'suffix': 'zip' },
