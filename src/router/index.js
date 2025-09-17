@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Wind from '../views/Wind.vue'
-import Wireframe from '../views/Wireframe.vue'
-import Terrian from '../views/Terrain.vue'
+import Wind from '../views/webgl/Wind.vue'
+import Wireframe from '../views/threejs/Wireframe.vue'
+import Terrian from '../views/threejs/Terrain.vue'
 
 export const routes = [
   {
@@ -11,19 +11,23 @@ export const routes = [
     component: Home
   },
   {
-    path: '/Wind',
-    name: 'Wind',
-    component: Wind
-  },
-  {
     path: '/Wireframe',
     name: 'Wireframe',
-    component: Wireframe
+    component: () => import('../views/threejs/Wireframe.vue')
   },
   {
-    path: '/Terrian',
-    name: 'Terrian',
-    component: Terrian
+    path: '/Terrain',
+    name: 'Terrain',
+    component: () => import('../views/threejs/Terrain.vue')
+  },
+  {
+    path: '/Wind',
+    name: 'Wind',
+    component: () => import('../views/webgl/Wind.vue')
+  },
+  {
+    path: '/webgpu',
+    name: 'webgpu',
   }
 ]
 

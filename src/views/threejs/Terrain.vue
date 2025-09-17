@@ -3,13 +3,12 @@
 
 <script setup>
 import { onUnmounted } from 'vue';
-import ShaderDemo5 from '../threejs/wireframe-tendrils-shader/index.js';
+import Terrain from '../../threejs/terrain/index.js';
 
-
-const demo = new ShaderDemo5()
+const terrain = new Terrain()
 
 onUnmounted(() => {
-  demo.dispose();
+  terrain.dispose();
 })
 </script>
 

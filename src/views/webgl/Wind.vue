@@ -6,8 +6,8 @@
 
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import ThreeWind from '../threejs/wind/wind.js';
-import { fetchWindData } from '../threejs/wind/fetch';
+import ThreeWind from '../../webgl/wind/wind.js';
+import { fetchWindData } from '../../webgl/wind/fetch';
 
 const wind = new ThreeWind()
 const windIns = ref(null);
