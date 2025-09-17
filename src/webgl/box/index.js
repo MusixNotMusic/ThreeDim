@@ -1,6 +1,5 @@
 import { vec3, mat4 } from 'wgpu-matrix';
 import { fail } from '../utils/expection';
-import { getKeyframeOrder } from 'three/src/animation/AnimationUtils';
 export function main() {
     const gl = document.querySelector('canvas').getContext('webgl');
 
@@ -77,7 +76,8 @@ export function main() {
           128, 255, 255, 255,
           255, 128, 255, 255,
           255, 128, 128, 255,
-        ]));
+        ])
+    );
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 

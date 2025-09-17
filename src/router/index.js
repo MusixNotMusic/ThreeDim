@@ -31,8 +31,9 @@ export const routes = [
     component: () => import('../views/webgl/Box.vue')
   },
   {
-    path: '/webgpu',
-    name: 'webgpu',
+    path: '/webgpu/Box',
+    name: 'webgpu-box',
+    component: () => import('../views/webgpu/Box.vue')
   }
 ]
 
