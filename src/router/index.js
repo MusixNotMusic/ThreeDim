@@ -11,19 +11,24 @@ export const routes = [
     component: Home
   },
   {
-    path: '/Wireframe',
+    path: '/threejs/Wireframe',
     name: 'Wireframe',
     component: () => import('../views/threejs/Wireframe.vue')
   },
   {
-    path: '/Terrain',
+    path: '/threejs/Terrain',
     name: 'Terrain',
     component: () => import('../views/threejs/Terrain.vue')
   },
   {
-    path: '/Wind',
+    path: '/webgl/Wind',
     name: 'Wind',
     component: () => import('../views/webgl/Wind.vue')
+  },
+  {
+    path: '/webgl/Box',
+    name: 'webgl-box',
+    component: () => import('../views/webgl/Box.vue')
   },
   {
     path: '/webgpu',
