@@ -34,7 +34,22 @@ export const routes = [
     path: '/webgpu/Box',
     name: 'webgpu-box',
     component: () => import('../views/webgpu/Box.vue')
-  }
+  },
+  {
+    path: '/webgpu/Triangle',
+    name: 'webgpu-triangle',
+    component: () => import('../views/webgpu/Triangle.vue')
+  },
+  {
+    path: '/webgpu/multi-triangle',
+    name: 'webgpu-multi-triangle',
+    component: () => import('../views/webgpu/MultiTriangle.vue')
+  },
+  {
+    path: '/webgpu/Compute',
+    name: 'webgpu-compute',
+    component: () => import('../views/webgpu/Compute.vue')
+  },
 ]
 
 const router = createRouter({

@@ -42,7 +42,7 @@ const paths = ref(routes);
   background: rgba(255, 255, 255, 0.85);
 }
 
-.active {
+.router-link-active  {
   color: orange;
   border-left: 4px solid orange !important;
   background: rgba(255, 255, 255, 0.85);
@@ -58,6 +58,10 @@ const paths = ref(routes);
 
 ::v-deep(.el-menu-item) {
   padding: 0px !important;
+}
+
+.content {
+  width: 100%;
 }
 
 </style>
