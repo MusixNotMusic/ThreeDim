@@ -50,6 +50,11 @@ export const routes = [
     name: 'webgpu-compute',
     component: () => import('../views/webgpu/Compute.vue')
   },
+  {
+    path: '/webgpu/MSdfText',
+    name: 'webgpu-MSdfText',
+    component: () => import('../views/webgpu/MSdfText.vue')
+  },
 ]
 
 const router = createRouter({
