@@ -50,6 +50,11 @@ export const routes = [
     name: 'webgpu-compute',
     component: () => import('../views/webgpu/Compute.vue')
   },
+  {
+    path: '/threejs/WindLine',
+    name: 'WindLine',
+    component: () => import('../views/threejs/WindLine.vue')
+  },
 ]
 
 const router = createRouter({
