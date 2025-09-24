@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@cdyw/asd-utils": "^1.0.20",
+    "dat.gui": "^0.7.9",
     "element-plus": "^2.10.5",
     "three": "^0.178.0",
     "vue": "^3.5.17",
