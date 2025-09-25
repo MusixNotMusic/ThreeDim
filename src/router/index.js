@@ -55,6 +55,11 @@ export const routes = [
     name: 'webgpu-MSdfText',
     component: () => import('../views/webgpu/MSdfText.vue')
   },
+  {
+    path: '/threejs/WindLine',
+    name: 'WindLine',
+    component: () => import('../views/threejs/WindLine.vue')
+  },
 ]
 
 const router = createRouter({
