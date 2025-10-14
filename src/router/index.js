@@ -65,6 +65,11 @@ export const routes = [
     name: 'workGroup',
     component: () => import('../views/webgpu/workGroup.vue')
   },
+  {
+    path: '/webgpu/Particles',
+    name: 'Particles',
+    component: () => import('../views/webgpu/Particles.vue')
+  },
 ]
 
 const router = createRouter({
