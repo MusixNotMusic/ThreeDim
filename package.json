@@ -15,6 +15,7 @@
     "three": "^0.178.0",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1",
+    "webgpu-utils": "^2.0.2",
     "wgpu-matrix": "^3.4.0"
   },
   "devDependencies": {

@@ -60,6 +60,11 @@ export const routes = [
     name: 'WindLine',
     component: () => import('../views/threejs/WindLine.vue')
   },
+  {
+    path: '/webgpu/workGroup',
+    name: 'workGroup',
+    component: () => import('../views/webgpu/workGroup.vue')
+  },
 ]
 
 const router = createRouter({
