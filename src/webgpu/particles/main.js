@@ -49,63 +49,63 @@ export async function main() {
         layout: 'auto',
         vertex: {
             module: device.createShaderModule({
-            code: particleWGSL,
+                code: particleWGSL,
             }),
             buffers: [
-            {
-                // instanced particles buffer
-                arrayStride: particleInstanceByteSize,
-                stepMode: 'instance',
-                attributes: [
                 {
-                    // position
-                    shaderLocation: 0,
-                    offset: particlePositionOffset,
-                    format: 'float32x3',
+                    // instanced particles buffer
+                    arrayStride: particleInstanceByteSize,
+                    stepMode: 'instance',
+                    attributes: [
+                    {
+                        // position
+                        shaderLocation: 0,
+                        offset: particlePositionOffset,
+                        format: 'float32x3',
+                    },
+                    {
+                        // color
+                        shaderLocation: 1,
+                        offset: particleColorOffset,
+                        format: 'float32x4',
+                    },
+                    ],
                 },
                 {
-                    // color
-                    shaderLocation: 1,
-                    offset: particleColorOffset,
-                    format: 'float32x4',
+                    // quad vertex buffer
+                    arrayStride: 2 * 4, // vec2f
+                    stepMode: 'vertex',
+                    attributes: [
+                        {
+                            // vertex positions
+                            shaderLocation: 2,
+                            offset: 0,
+                            format: 'float32x2',
+                        },
+                    ],
                 },
-                ],
-            },
-            {
-                // quad vertex buffer
-                arrayStride: 2 * 4, // vec2f
-                stepMode: 'vertex',
-                attributes: [
-                {
-                    // vertex positions
-                    shaderLocation: 2,
-                    offset: 0,
-                    format: 'float32x2',
-                },
-                ],
-            },
             ],
         },
         fragment: {
             module: device.createShaderModule({
-            code: particleWGSL,
+                code: particleWGSL,
             }),
             targets: [
-            {
-                format: presentationFormat,
-                blend: {
-                color: {
-                    srcFactor: 'src-alpha',
-                    dstFactor: 'one',
-                    operation: 'add',
+                {
+                    format: presentationFormat,
+                    blend: {
+                        color: {
+                            srcFactor: 'src-alpha',
+                            dstFactor: 'one',
+                            operation: 'add',
+                        },
+                        alpha: {
+                            srcFactor: 'zero',
+                            dstFactor: 'one',
+                            operation: 'add',
+                        },
+                    },
                 },
-                alpha: {
-                    srcFactor: 'zero',
-                    dstFactor: 'one',
-                    operation: 'add',
-                },
-                },
-            },
             ],
         },
         primitive: {
@@ -126,12 +126,12 @@ export async function main() {
     });
 
     const uniformBufferSize =
-    4 * 4 * 4 + // modelViewProjectionMatrix : mat4x4f
-    3 * 4 + // right : vec3f
-    4 + // padding
-    3 * 4 + // up : vec3f
-    4 + // padding
-    0;
+        4 * 4 * 4 + // modelViewProjectionMatrix : mat4x4f
+        3 * 4 + // right : vec3f
+        4 + // padding
+        3 * 4 + // up : vec3f
+        4 + // padding
+        0;
 
     const uniformBuffer = device.createBuffer({
         size: uniformBufferSize,
@@ -142,10 +142,10 @@ export async function main() {
         layout: renderPipeline.getBindGroupLayout(0),
         entries: [
             {
-            binding: 0,
-            resource: {
-                buffer: uniformBuffer,
-            },
+                binding: 0,
+                resource: {
+                    buffer: uniformBuffer,
+                },
             },
         ],
     });
@@ -153,10 +153,10 @@ export async function main() {
     const renderPassDescriptor = {
         colorAttachments: [
             {
-            view: undefined, // Assigned later
-            clearValue: [0, 0, 0, 1],
-            loadOp: 'clear',
-            storeOp: 'store',
+                view: undefined, // Assigned later
+                clearValue: [0, 0, 0, 1],
+                loadOp: 'clear',
+                storeOp: 'store',
             },
         ],
         depthStencilAttachment: {
@@ -187,25 +187,24 @@ export async function main() {
     // Texture
     //////////////////////////////////////////////////////////////////////////////
     const isPowerOf2 = (v) => Math.log2(v) % 1 === 0;
+    
     const response = await fetch('/texture/webgpu.png');
     const imageBitmap = await createImageBitmap(await response.blob());
+
     assert(imageBitmap.width === imageBitmap.height, 'image must be square');
     assert(isPowerOf2(imageBitmap.width), 'image must be a power of 2');
 
     // Calculate number of mip levels required to generate the probability map
-    const mipLevelCount =
-    (Math.log2(Math.max(imageBitmap.width, imageBitmap.height)) + 1) | 0;
+    const mipLevelCount = (Math.log2(Math.max(imageBitmap.width, imageBitmap.height)) + 1) | 0;
+
     const texture = device.createTexture({
         size: [imageBitmap.width, imageBitmap.height, 1],
         mipLevelCount,
         format: 'rgba8unorm',
-        usage:
-            GPUTextureUsage.TEXTURE_BINDING |
-            GPUTextureUsage.STORAGE_BINDING |
-            GPUTextureUsage.COPY_DST |
-            GPUTextureUsage.RENDER_ATTACHMENT,
-        });
-        device.queue.copyExternalImageToTexture(
+        usage: GPUTextureUsage.TEXTURE_BINDING |  GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+    });
+    
+    device.queue.copyExternalImageToTexture(
         { source: imageBitmap },
         { texture: texture },
         [imageBitmap.width, imageBitmap.height]
@@ -218,95 +217,92 @@ export async function main() {
     // probabilities up to the top 1x1 mip level.
     //////////////////////////////////////////////////////////////////////////////
     {
-    const probabilityMapImportLevelPipeline = device.createComputePipeline({
-        layout: 'auto',
-        compute: {
-        module: device.createShaderModule({ code: probabilityMapWGSL }),
-            entryPoint: 'import_level',
-        },
-    });
-    const probabilityMapExportLevelPipeline = device.createComputePipeline({
-        layout: 'auto',
-        compute: {
-        module: device.createShaderModule({ code: probabilityMapWGSL }),
-            entryPoint: 'export_level',
-        },
-    });
-
-    const probabilityMapUBOBufferSize =
-        1 * 4 + // stride
-        3 * 4 + // padding
-        0;
-    const probabilityMapUBOBuffer = device.createBuffer({
-        size: probabilityMapUBOBufferSize,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-    });
-    const buffer_a = device.createBuffer({
-        size: texture.width * texture.height * 4,
-        usage: GPUBufferUsage.STORAGE,
-    });
-    const buffer_b = device.createBuffer({
-        size: buffer_a.size,
-        usage: GPUBufferUsage.STORAGE,
-    });
-    device.queue.writeBuffer(
-        probabilityMapUBOBuffer,
-        0,
-        new Uint32Array([texture.width])
-    );
-    const commandEncoder = device.createCommandEncoder();
-    for (let level = 0; level < texture.mipLevelCount; level++) {
-        const levelWidth = Math.max(1, texture.width >> level);
-        const levelHeight = Math.max(1, texture.height >> level);
-        const pipeline =
-        level == 0
-            ? probabilityMapImportLevelPipeline.getBindGroupLayout(0)
-            : probabilityMapExportLevelPipeline.getBindGroupLayout(0);
-        
-        const probabilityMapBindGroup = device.createBindGroup({
-            layout: pipeline,
-            entries: [
-                {
-                // ubo
-                binding: 0,
-                resource: { buffer: probabilityMapUBOBuffer },
-                },
-                {
-                // buf_in
-                binding: 1,
-                resource: { buffer: level & 1 ? buffer_a : buffer_b },
-                },
-                {
-                // buf_out
-                binding: 2,
-                resource: { buffer: level & 1 ? buffer_b : buffer_a },
-                },
-                {
-                // tex_in / tex_out
-                binding: 3,
-                resource: texture.createView({
-                    format: 'rgba8unorm',
-                    dimension: '2d',
-                    baseMipLevel: level,
-                    mipLevelCount: 1,
-                }),
-                },
-            ],
+        const probabilityMapImportLevelPipeline = device.createComputePipeline({
+            layout: 'auto',
+            compute: {
+                module: device.createShaderModule({ code: probabilityMapWGSL }),
+                entryPoint: 'import_level',
+            },
         });
-        if (level == 0) {
-            const passEncoder = commandEncoder.beginComputePass();
-            passEncoder.setPipeline(probabilityMapImportLevelPipeline);
-            passEncoder.setBindGroup(0, probabilityMapBindGroup);
-            passEncoder.dispatchWorkgroups(Math.ceil(levelWidth / 64), levelHeight);
-            passEncoder.end();
-        } else {
-            const passEncoder = commandEncoder.beginComputePass();
-            passEncoder.setPipeline(probabilityMapExportLevelPipeline);
-            passEncoder.setBindGroup(0, probabilityMapBindGroup);
-            passEncoder.dispatchWorkgroups(Math.ceil(levelWidth / 64), levelHeight);
-            passEncoder.end();
+        const probabilityMapExportLevelPipeline = device.createComputePipeline({
+            layout: 'auto',
+            compute: {
+                module: device.createShaderModule({ code: probabilityMapWGSL }),
+                entryPoint: 'export_level',
+            },
+        });
+
+        const probabilityMapUBOBufferSize =
+            1 * 4 + // stride
+            3 * 4 + // padding
+            0;
+        const probabilityMapUBOBuffer = device.createBuffer({
+            size: probabilityMapUBOBufferSize,
+            usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        });
+        const buffer_a = device.createBuffer({
+            size: texture.width * texture.height * 4,
+            usage: GPUBufferUsage.STORAGE,
+        });
+        const buffer_b = device.createBuffer({
+            size: buffer_a.size,
+            usage: GPUBufferUsage.STORAGE,
+        });
+        device.queue.writeBuffer(
+            probabilityMapUBOBuffer,
+            0,
+            new Uint32Array([texture.width])
+        );
+        const commandEncoder = device.createCommandEncoder();
+        for (let level = 0; level < texture.mipLevelCount; level++) {
+            const levelWidth = Math.max(1, texture.width >> level);
+            const levelHeight = Math.max(1, texture.height >> level);
+            const pipeline = level == 0 ? probabilityMapImportLevelPipeline.getBindGroupLayout(0) : probabilityMapExportLevelPipeline.getBindGroupLayout(0);
+            
+            const probabilityMapBindGroup = device.createBindGroup({
+                layout: pipeline,
+                entries: [
+                    {
+                        // ubo
+                        binding: 0,
+                        resource: { buffer: probabilityMapUBOBuffer },
+                    },
+                    {
+                        // buf_in
+                        binding: 1,
+                        resource: { buffer: level & 1 ? buffer_a : buffer_b },
+                    },
+                    {
+                        // buf_out
+                        binding: 2,
+                        resource: { buffer: level & 1 ? buffer_b : buffer_a },
+                    },
+                    {
+                        // tex_in / tex_out
+                        binding: 3,
+                        resource: texture.createView({
+                            format: 'rgba8unorm',
+                            dimension: '2d',
+                            baseMipLevel: level,
+                            mipLevelCount: 1,
+                        }),
+                    },
+                ],
+            });
+            if (level == 0) {
+                const passEncoder = commandEncoder.beginComputePass();
+                passEncoder.setPipeline(probabilityMapImportLevelPipeline);
+                passEncoder.setBindGroup(0, probabilityMapBindGroup);
+                passEncoder.dispatchWorkgroups(Math.ceil(levelWidth / 64), levelHeight);
+                passEncoder.end();
+            } else {
+                const passEncoder = commandEncoder.beginComputePass();
+                passEncoder.setPipeline(probabilityMapExportLevelPipeline);
+                passEncoder.setBindGroup(0, probabilityMapBindGroup);
+                passEncoder.dispatchWorkgroups(Math.ceil(levelWidth / 64), levelHeight);
+                passEncoder.end();
+            }
         }
-    }
         device.queue.submit([commandEncoder.finish()]);
     }
 
@@ -336,12 +332,13 @@ export async function main() {
     gui.add(simulationParams, 'simulate');
     gui.add(simulationParams, 'deltaTime');
     const hdrFolder = gui.addFolder('');
-    hdrFolder
-    .add(simulationParams, 'toneMappingMode', ['standard', 'extended'])
-    .onChange(configureContext);
+
+    hdrFolder.add(simulationParams, 'toneMappingMode', ['standard', 'extended']).onChange(configureContext);
     hdrFolder.add(simulationParams, 'brightnessFactor', 0, 4, 0.1);
     hdrFolder.open();
+    
     const hdrMediaQuery = window.matchMedia('(dynamic-range: high)');
+
     function getHdrFolderName() {
         if (!hdrMediaQuery.matches) {
             return "HDR settings ⚠️ Display isn't compatible";
@@ -366,31 +363,32 @@ export async function main() {
         layout: 'auto',
         compute: {
             module: device.createShaderModule({
-            code: particleWGSL,
+                code: particleWGSL,
             }),
             entryPoint: 'simulate',
         },
     });
+
     const computeBindGroup = device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
         entries: [
             {
-            binding: 0,
-            resource: {
-                buffer: simulationUBOBuffer,
-            },
-            },
-            {
-            binding: 1,
-            resource: {
-                buffer: particlesBuffer,
-                offset: 0,
-                size: numParticles * particleInstanceByteSize,
-            },
+                binding: 0,
+                resource: {
+                    buffer: simulationUBOBuffer,
+                },
             },
             {
-            binding: 2,
-            resource: texture.createView(),
+                binding: 1,
+                resource: {
+                    buffer: particlesBuffer,
+                    offset: 0,
+                    size: numParticles * particleInstanceByteSize,
+                },
+            },
+            {
+                binding: 2,
+                resource: texture.createView(),
             },
         ],
     });
@@ -405,14 +403,14 @@ export async function main() {
             simulationUBOBuffer,
             0,
             new Float32Array([
-            simulationParams.simulate ? simulationParams.deltaTime : 0.0,
-            simulationParams.brightnessFactor,
-            0.0,
-            0.0, // padding
-            Math.random() * 100,
-            Math.random() * 100, // seed.xy
-            1 + Math.random(),
-            1 + Math.random(), // seed.zw
+                simulationParams.simulate ? simulationParams.deltaTime : 0.0,
+                simulationParams.brightnessFactor,
+                0.0,
+                0.0, // padding
+                Math.random() * 100,
+                Math.random() * 100, // seed.xy
+                1 + Math.random(),
+                1 + Math.random(), // seed.zw
             ])
         );
 
@@ -426,19 +424,19 @@ export async function main() {
             uniformBuffer,
             0,
             new Float32Array([
-            // modelViewProjectionMatrix
-            mvp[0], mvp[1], mvp[2], mvp[3],
-            mvp[4], mvp[5], mvp[6], mvp[7],
-            mvp[8], mvp[9], mvp[10], mvp[11],
-            mvp[12], mvp[13], mvp[14], mvp[15],
+                // modelViewProjectionMatrix
+                mvp[0], mvp[1], mvp[2], mvp[3],
+                mvp[4], mvp[5], mvp[6], mvp[7],
+                mvp[8], mvp[9], mvp[10], mvp[11],
+                mvp[12], mvp[13], mvp[14], mvp[15],
 
-            view[0], view[4], view[8], // right
+                view[0], view[4], view[8], // right
 
-            0, // padding
+                0, // padding
 
-            view[1], view[5], view[9], // up
+                view[1], view[5], view[9], // up
 
-            0, // padding
+                0, // padding
             ])
         );
         const swapChainTexture = context.getCurrentTexture();
