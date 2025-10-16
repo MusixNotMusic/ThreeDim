@@ -57,18 +57,18 @@ export async function main() {
                     arrayStride: particleInstanceByteSize,
                     stepMode: 'instance',
                     attributes: [
-                    {
-                        // position
-                        shaderLocation: 0,
-                        offset: particlePositionOffset,
-                        format: 'float32x3',
-                    },
-                    {
-                        // color
-                        shaderLocation: 1,
-                        offset: particleColorOffset,
-                        format: 'float32x4',
-                    },
+                        {
+                            // position
+                            shaderLocation: 0,
+                            offset: particlePositionOffset,
+                            format: 'float32x3',
+                        },
+                        {
+                            // color
+                            shaderLocation: 1,
+                            offset: particleColorOffset,
+                            format: 'float32x4',
+                        },
                     ],
                 },
                 {

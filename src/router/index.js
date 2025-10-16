@@ -70,6 +70,11 @@ export const routes = [
     name: 'Particles',
     component: () => import('../views/webgpu/Particles.vue')
   },
+  {
+    path: '/webgpu/Ball',
+    name: 'Ball',
+    component: () => import('../views/webgpu/Ball.vue')
+  },
 ]
 
 const router = createRouter({
